@@ -1,12 +1,12 @@
 <nav class="navbar navbar-dark bg-dark">
-  <a href="/" class="navbar-brand mt-2 mb-2">
+  <a href="" (click)="goToDB()" class="navbar-brand mt-2 mb-2 mr-4">
     APP Employees
   </a>
 </nav>
 
 <div class="container">
   <div class="row">
-    <div class="col-md-6 mt-4">
+    <div class="col-md-6 mt-8">
       <div class="card mt-4">
         <div class="card-body">
           <div class="card-tittle">
@@ -17,24 +17,52 @@
               <input type="tel" [(ngModel)]="selectedEmployee.phone" placeholder="Phone" class="form-control mt-2">
               <input type="text" [(ngModel)]="selectedEmployee.address" placeholder="Address" class="form-control mt-2">
             </div>
-            <button (click)="addOrEdit()" class="btn btn-info mt-2">
+            <button *ngIf="!employeeEdit" class="btn btn-info mt-2 mr-2" (click)="addEmployee()">
               Add
             </button>
-            <button *ngIf="selectedEmployee.id !== 0" class="btn btn-danger mt-2" (click)="delete()">
-              Delete
-            </button>
+            <div *ngIf="employeeEdit">
+              <button class="btn btn-warning mt-2 mr-2" (click)="editEmployee()">
+                Edit
+              </button>
+              <button *ngIf="selectedEmployee.id !== 0" class="btn btn-danger mt-2" (click)="onClickDelete()">
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="mt-4">
-        <ul class="list-group">
-          <li 
-            *ngFor="let employee of employeeArray;" 
-            class="list-group-item list-group-item-action" (click)="edit(employee)">
-           <span>{{ employee.id }} -</span> {{ employee.name }}  {{employee.lastName}} / {{employee.phone}} / {{ employee.address }}
-          </li>
-        </ul>
+    </div>
+    <div class="col-md-6 mt-4">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Adrees</th>
+          </tr>
+        </thead>
+        <tbody style="background-color: white;">
+          <tr *ngFor="let employee of employeeArray; let i = index" (click)="edit(employee)" id="selectTr">
+            <th scope="row">{{ i+1 }}</th>
+            <td>{{ employee.name }}</td>
+            <td>{{employee.lastName}}</td>
+            <td>{{employee.phone}}</td>
+            <td>{{ employee.address }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col"></div>
+    <div class="col mt-4">
+      <div *ngIf="alert" [class]="getClassAlert()" role="alert">
+        <h4 class="alert-heading">Alert</h4>
+        <p>{{this.textAlert}}</p>
       </div>
     </div>
+    <div class="col"></div>
   </div>
 </div>

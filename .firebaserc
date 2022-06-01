@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "app-employees-c8215"
+  },
+  "targets": {
+    "app-employees-c8215": {
+      "hosting": {
+        "APP-Employees": [
+          "app-employees-c8215"
+        ]
+      }
+    }
+  }
+}

@@ -1,1 +1,11 @@
+#selectTr{
+    cursor: pointer;
+}
 
+#selectTr:hover{
+    background-color: rgb(171, 205, 231);
+}
+.active{
+    
+    background-color: rgb(77, 97, 212);
+}
