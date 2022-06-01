@@ -9,19 +9,15 @@ import { Employee } from '../modules/employee';
 export class EmployeesService {
 
   constructor(private firestore: Firestore) { }
-  addEmployee(employee: Employee) {
-    const employeeRef = collection(this.firestore, 'employees');
-    return addDoc(employeeRef, employee);
-  }
 
   getEmployees(): Observable<Employee[]> {
     const employeeRef = collection(this.firestore, 'employees');
     return collectionData(employeeRef, { idField: 'id' }) as Observable<Employee[]>
   }
 
-  deleteEmployee(employee: Employee) {
-    const employeeDocRef = doc(this.firestore, `employees/${employee.id}`);
-    return deleteDoc(employeeDocRef);
+  addEmployee(employee: Employee) {
+    const employeeRef = collection(this.firestore, 'employees');
+    return addDoc(employeeRef, employee);
   }
 
   async editEmployee(employee: Employee) {
@@ -35,4 +31,10 @@ export class EmployeesService {
       address: employee.address
     });
   }
+
+  deleteEmployee(employee: string) {
+    const employeeDocRef = doc(this.firestore, `employees/${employee}`);
+    return deleteDoc(employeeDocRef);
+  }
+
 }

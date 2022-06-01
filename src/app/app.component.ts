@@ -8,19 +8,22 @@ import { EmployeesService } from 'src/app/services/employees.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  /*Arreglo para los empleados y mostrarlo en la interfaz*/
-  employeeArray: Employee[] = [
-  ];
+  /*Arreglo para los empleados y suministrarlos en la interfaz*/
+  employeeArray: Employee[] = [];
 
+  /*Objeto del empleado para la DB*/
+  employeeDB: Employee;
+
+  /*variables alerta y URL de DB*/
   alert: boolean = false;
   typeAlert: string = '';
   textAlert: string = '';
   private urlDB: string = 'https://console.firebase.google.com/u/0/project/app-employees-c8215/firestore/data/~2Femployees~2FAkMntHRTF2aUPorfU2mz'; 
 
-  /*Swicth add or edit */
+  /*Swicth para cambiar de añadir a editar/eliminar */
   employeeEdit: boolean = false;
 
-  /*Formulario empleado*/
+  /*Objeto guarda los datos del formulario*/
   selectedEmployee: any = {
     name: '',
     lastName: '',
@@ -28,23 +31,24 @@ export class AppComponent implements OnInit {
     address: '',
   };
 
-  /*Poder enviar el empleado al servicio conectado a la BD*/
-  employeeDB: Employee;
+  /*Constructor que importa el servicio de la DB en inicializa el objeto empleado */
   constructor(private employeeService: EmployeesService) {
     this.employeeDB = new Employee();
   }
 
+  /*Suministra los empleados de la DB al cargar la aplicación*/
   ngOnInit(): void {
-    /*Consultar el empleado creado*/
     this.employeeService.getEmployees().subscribe(employees => {
       this.employeeArray = employees;
     })
   }
 
+  /*metodo que direcciona a la DB */
   goToDB(){
     window.open(this.urlDB, '_blank');
   }
 
+  /*Metodo invocar alerta generica*/
   callAlertError(){
     this.typeAlert = 'error';
       this.alert = true;
@@ -54,6 +58,7 @@ export class AppComponent implements OnInit {
   }
   /*Evento Añadir Empleado*/
   async addEmployee() {
+    /*Validaciones*/
     if(this.selectedEmployee.name == null || this.selectedEmployee.name == undefined || this.selectedEmployee.name === ''){
       this.callAlertError();
       return  
@@ -73,7 +78,7 @@ export class AppComponent implements OnInit {
 
     this.selectedEmployee.id = this.employeeArray.length + 1;
 
-    /*Poder enviar los datos al servicio*/
+    /*gurada los datos registrados en el obejto del Empleado*/
     this.employeeDB = {
       id: this.selectedEmployee.id,
       name: this.selectedEmployee.name,
@@ -130,20 +135,13 @@ export class AppComponent implements OnInit {
 
   /*Eliminar Empleado*/
   async onClickDelete() {
-    this.employeeDB = {
-      id: this.selectedEmployee.id,
-      name: this.selectedEmployee.name,
-      lastName: this.selectedEmployee.lastName,
-      phone: this.selectedEmployee.phone,
-      address: this.selectedEmployee.address
-    }
-    await this.employeeService.deleteEmployee(this.employeeDB);
+    /*Envia el id a la DB para eliminarlo*/
+    await this.employeeService.deleteEmployee(this.selectedEmployee.id);
     this.typeAlert = 'delete';
     this.alert = true;
     setTimeout(() =>{
       this.alert = false
     },5000);
-
     this.employeeEdit = false;
 
     this.selectedEmployee = {
@@ -154,7 +152,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /*Switch de las alertas*/
+  /*Switch de los estilos de las alertas*/
   getClassAlert() {
     switch (this.typeAlert) {
       case 'add':
